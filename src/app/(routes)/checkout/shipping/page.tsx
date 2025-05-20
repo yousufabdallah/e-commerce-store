@@ -64,12 +64,17 @@ export default function ShippingPage() {
       // Get user information
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       
+      // Calculate totals
+      const subtotal = getTotal();
+      const tax = subtotal * 0.1;
+      const total = subtotal + tax + shippingFee;
+
       // Create order object
       const order = {
         id: `ORD-${Date.now()}`,
-        userId: user.id,
+        user_id: user.id,
         items: items.map(item => ({
-          productId: item.product.id,
+          product_id: item.product.id,
           name: item.product.name,
           price: item.product.price,
           quantity: item.quantity,
@@ -78,13 +83,14 @@ export default function ShippingPage() {
         shipping: {
           ...formData
         },
-        subtotal: getTotal(),
+        subtotal,
         shippingFee,
-        tax: getTotal() * 0.1,
-        total: getTotal() * 1.1 + shippingFee,
+        tax,
+        total,
         paymentMethod: 'Cash on Delivery',
-        status: 'Pending',
-        createdAt: new Date().toISOString()
+        status: 'pending',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
       
       // Save order to localStorage
